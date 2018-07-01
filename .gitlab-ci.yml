@@ -1,12 +1,8 @@
+image: "rustlang/rust:latest"
+
 stages:
   - build
   - test
-
-before_script:
-  - apt-get update -qq
-  - apt-get install -qq build-essential curl git
-  - curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain stable
-  - source "$HOME/.cargo/env"
 
 cache:
   paths:
