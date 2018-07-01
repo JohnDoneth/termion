@@ -1,25 +1,59 @@
+stages:
+  - build
+  - test
+
 before_script:
   - apt-get update -qq
   - apt-get install -qq build-essential curl git
   - curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain stable
   - source "$HOME/.cargo/env"
 
-stable:
+cache:
+  paths:
+    - target/
+
+build:stable:
+  stage: build
   script:
     - cargo +stable build --verbose
+    - cargo +stable build --release --verbose
+
+test:stable:
+  stage: test
+  dependencies:
+    - build:stable
+  script:
     - cargo +stable test --verbose
     - cargo +stable test --release --verbose
 
-beta:
+build:beta:
+  stage: build
   script:
     - rustup toolchain add beta
     - cargo +beta build --verbose
+    - cargo +beta build --release --verbose
+
+test:beta:
+  stage: test
+  dependencies:
+    - build:beta
+  script:
+    - rustup toolchain add beta
     - cargo +beta test --verbose
     - cargo +beta test --release --verbose
 
-nightly:
+build:nightly:
+  stage: build
   script:
-  - rustup toolchain add nightly
+    - rustup toolchain add nightly
     - cargo +nightly build --verbose
+    - cargo +nightly build --release --verbose
+
+test:nightly:
+  stage: test
+  dependencies:
+    - build:nightly
+  script:
+    - rustup toolchain add nightly
     - cargo +nightly test --verbose
     - cargo +nightly test --release --verbose
