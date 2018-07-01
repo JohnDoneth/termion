@@ -4,18 +4,25 @@ stages:
   - build
   - test
 
+before_script:
+    - rustup toolchain add $toolchain
+
 cache:
   paths:
     - target/
 
 build:stable:
   stage: build
+  variables:
+    toolchain: stable
   script:
     - cargo +stable build --verbose
     - cargo +stable build --release --verbose
 
 test:stable:
   stage: test
+  variables:
+    toolchain: stable
   dependencies:
     - build:stable
   script:
@@ -24,32 +31,36 @@ test:stable:
 
 build:beta:
   stage: build
+  variables:
+    toolchain: beta
   script:
-    - rustup toolchain add beta
     - cargo +beta build --verbose
     - cargo +beta build --release --verbose
 
 test:beta:
   stage: test
+  variables:
+    toolchain: beta
   dependencies:
     - build:beta
   script:
-    - rustup toolchain add beta
     - cargo +beta test --verbose
     - cargo +beta test --release --verbose
 
 build:nightly:
   stage: build
+  variables:
+    toolchain: nightly
   script:
-    - rustup toolchain add nightly
     - cargo +nightly build --verbose
     - cargo +nightly build --release --verbose
 
 test:nightly:
   stage: test
+  variables:
+    toolchain: nightly
   dependencies:
     - build:nightly
   script:
-    - rustup toolchain add nightly
     - cargo +nightly test --verbose
     - cargo +nightly test --release --verbose
